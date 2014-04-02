@@ -1,0 +1,9 @@
+{
+  markets: [{
+    name: 'Green City Market',
+    address: '123 Foobar Street, Chicago, IL',
+    url: 'http://www.example.com',
+    startTime: 123,
+    endTime: 456    
+  }]
+}

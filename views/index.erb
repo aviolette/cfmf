@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Andrew Violette, @aviolette/@chifarmersmktz on twitter"/>
+  <meta name="description"
+        content="Find farmer's markets that are open in the Chicago metro area on the current day"/>
+  <title>Chicago Farmer's Market Finder</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+  <link href="/css/main.css?ver=7" rel="stylesheet"/>
+  <script src="/javascripts/modernizr-1.7.min.js"></script>
+  <style type="text/css">
+    #listContainer {
+      overflow-y: auto !important;
+    }
+    .tooltip-inner {
+      text-align: left;
+      padding: 10px;
+    }
+    .tooltip-inner ul {
+      padding-left:10px;
+      margin:0;
+    }
+  </style>
+</head>
+<body>
+<nav id="topBar" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Chicago Farmer's Market Finder</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="#">About</a></li>
+      </ul>
+      <ul class="nav navbar-right navbar-nav">
+        <li><a style="padding: 10px 0 0 0" href="http://twitter.com/chifarmersmktz"><img src="/img/twitter02_dark.png"/></a></li>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container cftf-main-container">
+  <noscript>
+    <div class="alert alert-error">
+      Javascript is required for this site to function properly.
+    </div>
+  </noscript>
+<div class="row" id="sidebar">
+  <div class="col-md-4" id="listContainer">
+    <div id="motd" class="alert alert-warning alert-dismissable hidden">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <span id="motd-message"></span>
+    </div>
+    <div class="alert alert-info" id="flashMsg" style="display:none">
+    </div>
+    <ul class="nav nav-tabs" id="navTabs">
+      <li class="active"><a href="#nowTrucks" data-toggle="tab">Open Now</a></li>
+      <li><a href="#laterTrucks" data-toggle="tab">Open Later</a></li>
+    </ul>
+    <div class="tab-content">
+      <div id="nowTrucks" class="tab-pane active truckDL">
+      </div>
+      <div id="laterTrucks" class="tab-pane truckDL">
+      </div>
+    </div>
+  </div>
+  <div id="content" class="col-md-8">
+    <div id="map_wrapper">
+      <div class="section" id="map_canvas"></div>
+    </div>
+  </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+        src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
+<script type="text/javascript" src="/javascripts/market.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    FarmersMarketFinder.run(false, new google.maps.LatLng(41.880742999999995, -87.629386), new Date(1396461861945), []);
+  });
+</script>
+</div>
+
+<script type="text/javascript">
+  (function () {
+    var tagjs = document.createElement("script");
+    var s = document.getElementsByTagName("script")[0];
+    tagjs.async = true;
+    tagjs.src = "//s.btstatic.com/tag.js#site=SaQ7J4i";
+    s.parentNode.insertBefore(tagjs, s);
+  }());
+</script>
+<noscript>
+  <iframe src="//s.thebrighttag.com/iframe?c=SaQ7J4i" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+</noscript>
+</body>
+</html>
