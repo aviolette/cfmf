@@ -1,0 +1,21 @@
+    #listContainer {
+      overflow-y: auto !important;
+    }
+    .tooltip-inner {
+      text-align: left;
+      padding: 10px;
+    }
+    .tooltip-inner ul {
+      padding-left:10px;
+      margin:0;
+    }
+    .cfmf-main-container {
+        padding-top:60px;
+    }
+    ul.media-list {
+      padding-top:20px;
+    }
+    address {
+      font-style: italic;
+      margin-bottom: 5px;
+    }

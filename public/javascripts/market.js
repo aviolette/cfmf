@@ -297,6 +297,10 @@ var FarmersMarketFinder = function () {
       e.preventDefault()
       $(this).tab('show')
     });
+    $("#about-link").click(function(e) {
+      e.preventDefault();
+      $('#about-dialog').modal({ show: true, keyboard: true, backdrop: true});
+    })
   }
 
   function displayWarningIfMarkersNotVisible() {
