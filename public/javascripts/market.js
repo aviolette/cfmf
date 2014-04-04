@@ -83,7 +83,7 @@ var FarmersMarketFinder = function () {
           position: market.position
         });
         market.markerId = "marker" + color + letterId;
-        markers[market.location.name] = stop.marker;
+        markers[market.location.name] = market.marker;
         lastLetter++;
         this.bounds.extend(market.position);
       } else {
@@ -141,6 +141,8 @@ var FarmersMarketFinder = function () {
       $.each(self.markets, function (idx, item) {
         if (item["start"] <= now && item["end"] > now && (isMobile() || _map.getBounds().contains(item.position))) {
           items.push(item);
+        } else {
+          console.log("Start: " + item["start"] + ", now: " + now + ", end: " + item["end"]);
         }
       });
       return items;
@@ -165,11 +167,12 @@ var FarmersMarketFinder = function () {
   }
   
   function buildInfoWindow(market) {
-    var contentString = "<div class='infoWindowContent'><address class='locationName'>" +
-        market.location.name + "</address>";
+    var contentString = "<div class='infoWindowContent'><h4>" + market.name + "</h4>";
+    contentString += "<address>" + market.location.name + "</address>";
     if (market.distance != null) {
-      contentString += "<p>" + market.distance + " miles from your location</p>"
+      contentString += "<p>(" + market.distance + " miles from your location)</p>"
     }
+    contentString += "<p style='padding-top:10px'>" + buildTimeRange(market, Clock.now()) + "</p>";
     contentString = contentString + "</div>";
     var infowindow = new google.maps.InfoWindow({
       content: contentString
@@ -181,9 +184,9 @@ var FarmersMarketFinder = function () {
 
   function buildTimeRange(stop, time) {
     if (stop.start < time && stop.end > time) {
-      return "Ends at: " + stop.endFormatted;
+      return "Closes at: " + stop.endFormatted;
     } else {
-      return "Opens today from " + stop.startFormatted + " - " + stop.endFormatted ;
+      return "Opens today from " + stop.startFormatted + " to " + stop.endFormatted ;
     }
   }
 
@@ -220,11 +223,11 @@ var FarmersMarketFinder = function () {
           return;
         }
         buildInfoWindow(market);
-        $("#" + markerAndId.id).click(function (e) {
+        $("#" + market.markerId).click(function (e) {
           e.preventDefault();
-          markerAndId.marker.setAnimation(google.maps.Animation.BOUNCE);
+          market.marker.setAnimation(google.maps.Animation.BOUNCE);
           setTimeout(function () {
-            markerAndId.marker.setAnimation(null);
+            market.marker.setAnimation(null);
           }, 3000);
         });
       });
