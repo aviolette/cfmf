@@ -183,7 +183,7 @@ var FarmersMarketFinder = function () {
     if (stop.start < time && stop.end > time) {
       return "Ends at: " + stop.endFormatted;
     } else {
-      return stop.startFormatted + " - " + stop.endFormatted;
+      return "Opens today from " + stop.startFormatted + " - " + stop.endFormatted ;
     }
   }
 
@@ -196,10 +196,11 @@ var FarmersMarketFinder = function () {
       if (market.location.url) $locationDescription.append("<div>" + market.location.url + "</a></div>");
       if (market.location.description) $locationDescription.append("<div>" + market.location.description + " </div>");
       if (!isMobile()) {
-        if (market.distance) $locationDescription.append("<div>(" + market.distance + " miles from map center)</div>");
+        if (market.distance) $locationDescription.append("(" + market.distance + " miles from map center)");
         $div = $("<div class='media-body'><h4>" + market.name + "</h4></div>");
-        $div.append("<p>" + buildTimeRange(market, now) + "</p>");
         $div.append($locationDescription);
+        $div.append("<p style='padding-top:10px'>" + buildTimeRange(market, now) + "</p>");
+        if (market.description) $div.append("<div>" + market.description + "</div>")
         $location = $("<li class='media'><a class='pull-left' href='#'><img id='" + market.markerId + "' class='media-object' src='"
               + market.marker.icon +"'/></a></li>");
         $location.append($div);
