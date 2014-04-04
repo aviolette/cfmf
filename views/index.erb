@@ -24,6 +24,12 @@
       padding-left:10px;
       margin:0;
     }
+    .cfmf-main-container {
+        padding-top:60px;
+    }
+    ul.media-list {
+      padding-top:20px;
+    }
   </style>
 </head>
 <body>
@@ -44,7 +50,7 @@
   </div>
 </nav>
 
-<div class="container cftf-main-container">
+<div class="container cfmf-main-container">
   <noscript>
     <div class="alert alert-error">
       Javascript is required for this site to function properly.
@@ -59,13 +65,13 @@
     <div class="alert alert-info" id="flashMsg" style="display:none">
     </div>
     <ul class="nav nav-tabs" id="navTabs">
-      <li class="active"><a href="#nowTrucks" data-toggle="tab">Open Now</a></li>
-      <li><a href="#laterTrucks" data-toggle="tab">Open Later</a></li>
+      <li class="active"><a href="#nowMarkets" data-toggle="tab">Open Now</a></li>
+      <li><a href="#laterMarkets" data-toggle="tab">Open Later</a></li>
     </ul>
     <div class="tab-content">
-      <div id="nowTrucks" class="tab-pane active truckDL">
+      <div id="nowMarkets" class="tab-pane active marketDL">
       </div>
-      <div id="laterTrucks" class="tab-pane truckDL">
+      <div id="laterMarkets" class="tab-pane marketDL">
       </div>
     </div>
   </div>
@@ -82,7 +88,7 @@
 <script type="text/javascript" src="/javascripts/market.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
-    FarmersMarketFinder.run(false, new google.maps.LatLng(41.880742999999995, -87.629386), new Date(1396461861945), []);
+    FarmersMarketFinder.run(new google.maps.LatLng(41.880742999999995, -87.629386));
   });
 </script>
 </div>
