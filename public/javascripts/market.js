@@ -374,7 +374,7 @@ var FarmersMarketFinder = function () {
         error: function () {
           try {
             console.log("Failed to reload model at " + (new Date()));
-            successFunc({"markets":[{"start":1412164800000,"end":1412164800000,"location":{"name":"Clark and Monroe, Chicago, IL","lat":41.880731,"lng":-87.630836},"name":"Green City Market"}]})
+            successFunc({"markets":[]})
           } catch (e) {}
         },
         success: function (data) {
