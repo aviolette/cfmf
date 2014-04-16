@@ -1,41 +1,3 @@
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="author" content="Andrew Violette, @aviolette/@chifarmersmktz on twitter"/>
-  <meta name="description"
-        content="Find farmer's markets that are open in the Chicago metro area on the current day"/>
-  <title>Chicago Farmer's Market Finder</title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-  <link href="/stylesheets/main.css" rel="stylesheet"/>
-  <script src="/javascripts/modernizr-1.7.min.js"></script>
-</head>
-<body>
-<nav id="topBar" class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/">Chicago Farmer's Market Finder</a>
-    </div>
-    <div class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li><a href="#" id="about-link">About</a></li>
-      </ul>
-      <ul class="nav navbar-right navbar-nav">
-        <li><a style="padding: 10px 0 0 0" href="http://twitter.com/chifarmersmktz"><img src="/imgs/twitter02_dark.png"/></a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<div class="container cfmf-main-container">
-  <noscript>
-    <div class="alert alert-error">
-      Javascript is required for this site to function properly.
-    </div>
-  </noscript>
 <div class="row" id="sidebar">
   <div class="col-md-4" id="listContainer">
     <div id="motd" class="alert alert-warning alert-dismissable hidden">
@@ -84,21 +46,6 @@
 <script type="text/javascript" src="/javascripts/market.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
-    FarmersMarketFinder.run(new google.maps.LatLng(41.880742999999995, -87.629386));
+    FarmersMarketFinder.run(new google.maps.LatLng(41.880742999999995, -87.629386), <% if @year %> new Date(<%= @year %>, <%= @mon.to_i - 1%>, <%=@day%>) <% else %>new Date()<% end %>);
   });
 </script>
-</div>
-<script type="text/javascript">
-  (function () {
-    var tagjs = document.createElement("script");
-    var s = document.getElementsByTagName("script")[0];
-    tagjs.async = true;
-    tagjs.src = "//s.btstatic.com/tag.js#site=SaQ7J4i";
-    s.parentNode.insertBefore(tagjs, s);
-  }());
-</script>
-<noscript>
-  <iframe src="//s.thebrighttag.com/iframe?c=SaQ7J4i" width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-</noscript>
-</body>
-</html>

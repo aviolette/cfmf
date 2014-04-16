@@ -1,0 +1,42 @@
+
+
+  <style type="text/css">
+  dt {padding-top: 20px;}
+  </style>
+  <h2>Chicago Area Farmers Markets</h2>
+
+  <dl id="market-list">
+
+  </dl>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+<script>
+
+  $.ajax({
+    url: '/schedules/allmarkets.json',
+    dataType: 'json',
+    cache: false,
+    error: function () {
+      try {
+        console.log("Failed to reload model at " + (new Date()));
+      } catch (e) {}
+    },
+    success: function (data) {
+      try {
+        console.log("Successfully loaded model at " + (new Date()));
+        var $marketList = $("#market-list");
+        $.each(data["markets"], function(idx, market) {
+          $marketList.append("<dt>" + market["name"] + "</dt>");
+          if (market["url"]) {
+            $marketList.append("<dd><a href='" + market["url"] + "'>" + market["url"] + "</a>");
+          }
+          $marketList.append("<dd><a href='http://maps.google.com/?q=" + market["location"]["lat"]+ "," + market["location"]["lng"]+ "'>" + market["location"]["name"] + "</a></dd>");
+          $marketList.append("<dd>" + market["description"] + "</dd>");
+          console.log("Market: " + market["name"])
+        });
+      } catch (e) {}
+    }
+});
+
+</script>

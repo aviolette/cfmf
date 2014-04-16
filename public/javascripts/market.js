@@ -3,6 +3,7 @@ var FarmersMarketFinder = function () {
       _markets = null,
       _mobile = false,
       _markers = null,
+      _displayForDate = null,
       _center = null;
 
   function isMobile() {
@@ -203,7 +204,7 @@ var FarmersMarketFinder = function () {
         $div = $("<div class='media-body'><h4>" + market.name + "</h4></div>");
         $div.append($locationDescription);
         $div.append("<p style='padding-top:10px'>" + buildTimeRange(market, now) + "</p>");
-        if (market.description) $div.append("<div>" + market.description + "</div>")
+        if (market.url) $div.append("<div><a href='" + market.url + "'>" + market.url + "</a></div>")
         $location = $("<li class='media'><a class='pull-left' href='#'><img id='" + market.markerId + "' class='media-object' src='"
               + market.marker.icon +"'/></a></li>");
         $location.append($div);
@@ -365,7 +366,7 @@ var FarmersMarketFinder = function () {
     },
     reload: function (successFunc) {
       console.log("Reloading model...")
-      var now = new Date(), year = now.getYear() + 1900, month = now.getMonth() + 1, day = now.getDate();
+      var now = _displayForDate, year = now.getYear() + 1900, month = now.getMonth() + 1, day = now.getDate();
       var self = this;
       $.ajax({
         url: '/schedules/'+year+'-'+month+'-'+day+'.json',
@@ -394,10 +395,11 @@ var FarmersMarketFinder = function () {
     extend: function () {
       _map.fitBounds(_markers.bounds);
     },
-    run: function (center) {
+    run: function (center, onDate) {
       var self = this;
       _center = findCenter(center);
       resize();
+      _displayForDate = onDate;
       self.reload(function(modelPayload) {
         if (displayListOnly()) {
           _mobile = true;
