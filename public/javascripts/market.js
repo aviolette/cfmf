@@ -195,6 +195,7 @@ var FarmersMarketFinder = function () {
     $marketList.empty();
     var $items = $("<ul class='media-list'></ul>"), lastIcon = null, now = Clock.now(), $location, $div;
     $items.appendTo($marketList);
+    var activeToday = activeDataSet() != 'allmarkets';
     $.each(markets, function (idx, market) {
       var $locationDescription = $("<div><address>" + market.location.name + "</address></div>");
       if (market.location.url) $locationDescription.append("<div>" + market.location.url + "</a></div>");
@@ -203,8 +204,14 @@ var FarmersMarketFinder = function () {
         if (market.distance) $locationDescription.append("(" + market.distance + " miles from map center)");
         $div = $("<div class='media-body'><h4>" + market.name + "</h4></div>");
         $div.append($locationDescription);
-        $div.append("<p style='padding-top:10px'>" + buildTimeRange(market, now) + "</p>");
-        if (market.url) $div.append("<div><a href='" + market.url + "'>" + market.url + "</a></div>")
+        if (!activeToday) {
+          if (market.description) {
+            $div.append("<p style='padding-top:10px'>" + market.description + "</p>");
+          }
+        } else {
+          $div.append("<p style='padding-top:10px'>" + buildTimeRange(market, now) + "</p>");
+        }
+        if (market.url) $div.append("<div><a href='" + market.url+ "'>" + market.url + "</a></div>")
         $location = $("<li class='media'><a class='pull-left' href='#'><img id='" + market.markerId + "' class='media-object' src='"
               + market.marker.icon +"'/></a></li>");
         $location.append($div);
@@ -286,6 +293,14 @@ var FarmersMarketFinder = function () {
     $("#listContainer").height($(window).height() - $("#topBar").height()-20);
   }
 
+  function enableNavs() {
+    if ($("#open-today-li").hasClass("active")) {
+      $("#navTabs").removeClass("hidden");
+    } else {
+      $("#navTabs").addClass('hidden');
+    }
+  }
+
   function setupGlobalEventHandlers() {
     $(window).resize(function () {
       resize();
@@ -302,6 +317,15 @@ var FarmersMarketFinder = function () {
       e.preventDefault();
       $('#about-dialog').modal({ show: true, keyboard: true, backdrop: true});
     })
+    $('a.pill-link').on('shown.bs.tab', function (e) {
+      var dataSet = activeDataSet()
+      enableNavs();
+      reload(dataSet, function(modelPayload) {
+        _markets = new Markets(modelPayload);
+        refreshViewData();
+      })
+
+    });
   }
 
   function displayWarningIfMarkersNotVisible() {
@@ -356,6 +380,37 @@ var FarmersMarketFinder = function () {
     }
   }
 
+  function activeDataSet() {
+    if ($("#open-today-li").hasClass("active")) {
+      var now = _displayForDate, year = now.getYear() + 1900, month = now.getMonth() + 1, day = now.getDate();
+      return year+'-'+month+'-'+day;
+    }
+    return 'allmarkets';
+  }
+
+  function reload(dataSet, successFunc) {
+    console.log("Reloading model...")
+    var self = this;
+
+    $.ajax({
+      url: '/schedules/' + dataSet + '.json',
+      dataType: 'json',
+      cache: false,
+      error: function () {
+        try {
+          console.log("Failed to reload model at " + (new Date()));
+          successFunc({"markets":[]})
+        } catch (e) {}
+      },
+      success: function (data) {
+        try {
+          console.log("Successfully loaded model at " + (new Date()));
+          successFunc(data);
+        } catch (e) {}
+      }
+    });
+  }
+
   return {
     setModel: function (model) {
       _markets = new Markets(model);
@@ -364,27 +419,11 @@ var FarmersMarketFinder = function () {
     getModel: function() {
       return _markets;
     },
-    reload: function (successFunc) {
-      console.log("Reloading model...")
-      var now = _displayForDate, year = now.getYear() + 1900, month = now.getMonth() + 1, day = now.getDate();
+    reload: function (dataSet) {
       var self = this;
-      $.ajax({
-        url: '/schedules/'+year+'-'+month+'-'+day+'.json',
-        dataType: 'json',
-        cache: false,
-        error: function () {
-          try {
-            console.log("Failed to reload model at " + (new Date()));
-            successFunc({"markets":[]})
-          } catch (e) {}
-        },
-        success: function (data) {
-          try {
-            console.log("Successfully loaded model at " + (new Date()));
-            successFunc(data);
-          } catch (e) {}
-        }
-      });
+      reload(dataSet, function(modelPayload) {
+        self.setModel(modelPayload);
+      })
     },
     hideFlash: function() {
       hideFlash();
@@ -400,7 +439,8 @@ var FarmersMarketFinder = function () {
       _center = findCenter(center);
       resize();
       _displayForDate = onDate;
-      self.reload(function(modelPayload) {
+      enableNavs();
+      reload(activeDataSet(), function(modelPayload) {
         if (displayListOnly()) {
           _mobile = true;
           $("#map_wrapper").css("display", "none");

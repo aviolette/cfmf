@@ -1,15 +1,24 @@
 <div class="row" id="sidebar">
   <div class="col-md-4" id="listContainer">
+
+
     <div id="motd" class="alert alert-warning alert-dismissable hidden">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
       <span id="motd-message"></span>
     </div>
     <div class="alert alert-info" id="flashMsg" style="display:none">
     </div>
-    <ul class="nav nav-tabs" id="navTabs">
-      <li class="active"><a href="#nowMarkets" data-toggle="tab">Open Now</a></li>
-      <li><a href="#laterMarkets" data-toggle="tab">Open Later</a></li>
+
+    <ul class="nav nav-pills" style="padding-bottom:20px">
+      <li id="open-today-li" <% if @active != 'all' %>class="active"<% end %>><a class="pill-link" href="#" id="open-today" data-toggle="pill">Open Today</a></li>
+      <li <% if @active == 'all' %>class='active'<% end %>><a class="pill-link" href="#" id="all-markets" data-toggle="pill">All Markets</a></li>
     </ul>
+
+    <ul class="nav nav-tabs" id="navTabs">
+      <li ><a href="#nowMarkets" data-toggle="tab">Open Now</a></li>
+      <li ><a href="#laterMarkets" data-toggle="tab">Open Later</a></li>
+    </ul>
+
     <div class="tab-content">
       <div id="nowMarkets" class="tab-pane active marketDL">
       </div>
