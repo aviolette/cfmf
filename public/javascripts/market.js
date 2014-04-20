@@ -57,6 +57,7 @@ var FarmersMarketFinder = function () {
     var markers = {}, lastLetter = 0, color = "";
 
     function buildIconURL(letter) {
+      /*
       var code = letter.charCodeAt(0);
       if (code > 90) {
         code = code - 26;
@@ -64,6 +65,8 @@ var FarmersMarketFinder = function () {
       }
       letter = String.fromCharCode(code);
       return "http://www.google.com/mapfiles/marker" + color + letter + ".png"
+      */
+      return "http://www.google.com/mapfiles/marker.png";
     }
 
     this.clear = function () {
@@ -77,13 +80,13 @@ var FarmersMarketFinder = function () {
 
     this.add = function (market) {
       if (markers[market.location.name] == undefined) {
-        var letterId = String.fromCharCode(65 + lastLetter);
+        var letterId = 0;
         market.marker = new google.maps.Marker({
           map: _map,
           icon: buildIconURL(letterId),
           position: market.position
         });
-        market.markerId = "marker" + color + letterId;
+        market.markerId = "marker" + lastLetter;
         markers[market.location.name] = market.marker;
         lastLetter++;
         this.bounds.extend(market.position);
@@ -142,9 +145,7 @@ var FarmersMarketFinder = function () {
       $.each(self.markets, function (idx, item) {
         if (item["start"] <= now && item["end"] > now && (isMobile() || _map.getBounds().contains(item.position))) {
           items.push(item);
-        } else {
-          console.log("Start: " + item["start"] + ", now: " + now + ", end: " + item["end"]);
-        }
+        } 
       });
       return items;
     };
@@ -463,6 +464,7 @@ var FarmersMarketFinder = function () {
             maxZoom: 18,
             mapTypeId: google.maps.MapTypeId.ROADMAP
           });
+          self.setModel(modelPayload);
           google.maps.event.addListener(_map, 'center_changed', function () {
             saveCenter(_map.getCenter());
             displayWarningIfMarkersNotVisible();
@@ -478,12 +480,12 @@ var FarmersMarketFinder = function () {
 
           google.maps.event.addListener(_map, 'dragend', function () {
             centerMarker.setMap(null);
-            self.setModel(modelPayload);
+            refreshViewData();
           });
 
           google.maps.event.addListener(_map, 'zoom_changed', function () {
             saveZoom(_map.getZoom());
-            self.setModel(modelPayload);
+            refreshViewData();
           });
           var listener = null;
           // just want to invoke this once, for when the map first loads
