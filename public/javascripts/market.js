@@ -153,8 +153,13 @@ var FarmersMarketFinder = function () {
     this.openLater = function () {
       var now = Clock.now(), items = [];
       $.each(self.markets, function (idx, item) {
-        if (item["start"] > now && (isMobile() || _map.getBounds().contains(item.position))) {
-          items.push(item);
+        try {
+          if (item["start"] > now && (isMobile() || ((typeof _map.getBounds() != "undefined") && _map.getBounds().contains(item.position)))) {
+            items.push(item);
+          }
+        } catch (e) {
+          console.log("INDEX: " + idx);
+          console.log(e);
         }
       });
       return items;
@@ -174,7 +179,11 @@ var FarmersMarketFinder = function () {
     if (market.distance != null) {
       contentString += "<p>(" + market.distance + " miles from your location)</p>"
     }
-    contentString += "<p style='padding-top:10px'>" + buildTimeRange(market, Clock.now()) + "</p>";
+    if (activeDataSet() == 'allmarkets') {
+      contentString += "<p style='padding-top:10px'>" + market.description + "</p>";
+    } else {
+      contentString += "<p style='padding-top:10px'>" + buildTimeRange(market, Clock.now()) + "</p>";
+    }
     contentString = contentString + "</div>";
     var infowindow = new google.maps.InfoWindow({
       content: contentString
@@ -401,13 +410,17 @@ var FarmersMarketFinder = function () {
         try {
           console.log("Failed to reload model at " + (new Date()));
           successFunc({"markets":[]})
-        } catch (e) {}
+        } catch (e) {
+          console.log(e);
+        }
       },
       success: function (data) {
         try {
           console.log("Successfully loaded model at " + (new Date()));
           successFunc(data);
-        } catch (e) {}
+        } catch (e) {
+          console.log(e);
+        }
       }
     });
   }
@@ -464,7 +477,7 @@ var FarmersMarketFinder = function () {
             maxZoom: 18,
             mapTypeId: google.maps.MapTypeId.ROADMAP
           });
-          self.setModel(modelPayload);
+          _markets = new Markets(modelPayload);
           google.maps.event.addListener(_map, 'center_changed', function () {
             saveCenter(_map.getCenter());
             displayWarningIfMarkersNotVisible();
@@ -477,16 +490,8 @@ var FarmersMarketFinder = function () {
             centerMarker.setMap(_map);
             centerMarker.setPosition(_map.getCenter());
           });
+          setupGlobalEventHandlers();
 
-          google.maps.event.addListener(_map, 'dragend', function () {
-            centerMarker.setMap(null);
-            refreshViewData();
-          });
-
-          google.maps.event.addListener(_map, 'zoom_changed', function () {
-            saveZoom(_map.getZoom());
-            refreshViewData();
-          });
           var listener = null;
           // just want to invoke this once, for when the map first loads
           listener = google.maps.event.addListener(_map, 'bounds_changed', function () {
@@ -495,7 +500,16 @@ var FarmersMarketFinder = function () {
               google.maps.event.removeListener(listener);
             }
           });
-          setupGlobalEventHandlers();
+          google.maps.event.addListener(_map, 'dragend', function () {
+            centerMarker.setMap(null);
+            refreshViewData();
+          });
+
+
+          google.maps.event.addListener(_map, 'zoom_changed', function () {
+            saveZoom(_map.getZoom());
+            refreshViewData();
+          });
 
           if (Modernizr.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
