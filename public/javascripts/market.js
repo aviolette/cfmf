@@ -311,6 +311,18 @@ var FarmersMarketFinder = function () {
     }
   }
 
+  function setupPills() {
+    $('a.pill-link').on('shown.bs.tab', function (e) {
+      var dataSet = activeDataSet()
+      enableNavs();
+      reload(dataSet, function(modelPayload) {
+        _markets = new Markets(modelPayload);
+        refreshViewData();
+      })
+
+    });
+  }
+
   function setupGlobalEventHandlers() {
     $(window).resize(function () {
       resize();
@@ -327,15 +339,7 @@ var FarmersMarketFinder = function () {
       e.preventDefault();
       $('#about-dialog').modal({ show: true, keyboard: true, backdrop: true});
     })
-    $('a.pill-link').on('shown.bs.tab', function (e) {
-      var dataSet = activeDataSet()
-      enableNavs();
-      reload(dataSet, function(modelPayload) {
-        _markets = new Markets(modelPayload);
-        refreshViewData();
-      })
-
-    });
+    setupPills();
   }
 
   function displayWarningIfMarkersNotVisible() {
@@ -458,6 +462,7 @@ var FarmersMarketFinder = function () {
         if (displayListOnly()) {
           _mobile = true;
           $("#map_wrapper").css("display", "none");
+          setupPills();
           if (Modernizr.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
               _center = new google.maps.LatLng(position.coords.latitude,
