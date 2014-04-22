@@ -207,7 +207,8 @@ var FarmersMarketFinder = function () {
     $items.appendTo($marketList);
     var activeToday = activeDataSet() != 'allmarkets';
     $.each(markets, function (idx, market) {
-      var $locationDescription = $("<div><address>" + market.location.name + "</address></div>");
+      var locationName = isMobile() ? "<a href='http://maps.google.com/maps?q=" + market.location.lat + "," + market.location.lng + "'>" + market.location.name + "</a>" : market.location.name;
+      var $locationDescription = $("<div><address>" + locationName + "</address></div>");
       if (market.location.url) $locationDescription.append("<div>" + market.location.url + "</a></div>");
       if (market.location.description) $locationDescription.append("<div>" + market.location.description + " </div>");
       if (!isMobile()) {
@@ -228,7 +229,7 @@ var FarmersMarketFinder = function () {
         $items.append($location);
       } else {
         if (market.distance) $locationDescription.append("<div>(" + market.distance + " miles away)</div>");
-        $div = $("<div class='media-body'><h4><a href='http://maps.google.com/maps?q=" + market.location.lat + "," + market.location.lng + "'>" + formatLocation(market.name) + "</a></h4></div>");
+        $div = $("<div class='media-body'><h4>" + formatLocation(market.name) + "</h4></div>");
         $div.append($locationDescription);
         if (!activeToday) {
           if (market.description) {
