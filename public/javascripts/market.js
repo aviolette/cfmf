@@ -228,7 +228,7 @@ var FarmersMarketFinder = function () {
         $items.append($location);
       } else {
         if (market.distance) $locationDescription.append("<div>(" + market.distance + " miles away)</div>");
-        $div = $("<div class='media-body'><h4>" + formatLocation(market.name) + "</h4></div>");
+        $div = $("<div class='media-body'><h4><a href='http://maps.google.com/maps?q=" + market.location.lat + "," + market.location.lng + "'>" + formatLocation(market.name) + "</a></h4></div>");
         $div.append($locationDescription);
         if (!activeToday) {
           if (market.description) {
