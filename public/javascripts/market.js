@@ -413,13 +413,14 @@ var FarmersMarketFinder = function () {
   function reload(dataSet, successFunc) {
     console.log("Reloading model...")
     var self = this;
-
+    flash("Loading...");
     $.ajax({
       url: '/schedules/' + dataSet + '.json',
       dataType: 'json',
       cache: false,
       error: function () {
         try {
+          hideFlash();
           console.log("Failed to reload model at " + (new Date()));
           successFunc({"markets":[]})
         } catch (e) {
@@ -428,6 +429,7 @@ var FarmersMarketFinder = function () {
       },
       success: function (data) {
         try {
+          hideFlash();
           console.log("Successfully loaded model at " + (new Date()));
           successFunc(data);
         } catch (e) {
