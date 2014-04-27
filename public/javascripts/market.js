@@ -275,6 +275,8 @@ var FarmersMarketFinder = function () {
       buildMarketList($("#laterMarkets"), laterMarkets);
       if (nowMarkets.length == 0) {
         $('a[href="#laterMarkets"]').tab('show');
+      } else {
+        $('a[href="#nowMarkets"]').tab('show');
       }
     }
   }
