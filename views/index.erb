@@ -2,8 +2,8 @@
   <div class="col-md-4" id="listContainer">
 
     <ul class="nav nav-pills" style="padding-bottom:20px">
-      <li id="open-today-li" <% if @active != 'all' %>class="active"<% end %>><a class="pill-link" href="#" id="open-today" data-toggle="pill">Open Today</a></li>
-      <li <% if @active == 'all' %>class='active'<% end %>><a class="pill-link" href="#" id="all-markets" data-toggle="pill">All Markets</a></li>
+      <li id="open-today-li" <% if @active != 'all' %>class="active"<% end %>><a class="pill-link" href="/" id="open-today" >Open Today</a></li>
+      <li <% if @active == 'all' %>class='active'<% end %>><a class="pill-link" href="/?active=all" id="all-markets" >All Markets</a></li>
     </ul>
 
     <div style="padding-bottom:20px" class="alert alert-info" id="flashMsg" style="display:none">

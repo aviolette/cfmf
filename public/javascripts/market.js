@@ -123,6 +123,19 @@ var FarmersMarketFinder = function () {
       });
     };
 
+    this.allVisibleMarkets = function() {
+      if (isMobile()) {
+        return this.all();
+      }
+      var items = [];
+      $.each(self.markets, function (idx, item) {
+        if (_map.getBounds().contains(item.position)) {
+          items.push(item);
+        } 
+      });
+      return items;
+    }
+
     this.allVisible = function () {
       if (isMobile()) {
         return true;
@@ -222,7 +235,7 @@ var FarmersMarketFinder = function () {
         } else {
           $div.append("<p style='padding-top:10px'>" + buildTimeRange(market, now) + "</p>");
         }
-        if (market.url) $div.append("<div><a href='" + market.url+ "'>" + market.url + "</a></div>")
+        if (market.url) $div.append("<div><a href='" + market.url+ "'>" + market.url + "</a></div>");
         $location = $("<li class='media'><a class='pull-left' href='#'><img id='" + market.markerId + "' class='media-object' src='"
               + market.marker.icon +"'/></a></li>");
         $location.append($div);
@@ -261,22 +274,30 @@ var FarmersMarketFinder = function () {
   }
 
   function updateMarketLists() {
-    var location = findLocation(),
-        nowMarkets = sortByDistanceFromLocation(_markets.openNow(), location),
-        laterMarkets = sortByDistanceFromLocation(_markets.openLater(), location);
-    if (nowMarkets.length == 0 && laterMarkets.length == 0) {
-      $(".trucksListHeader").css("display", "none");
-      $("#navTabs").css("display", "none");
-      $(".marketDL").empty();
-    } else {
+    var location = findLocation();
+
+    if (isAllMarkets()) {
+      var allMarkets = sortByDistanceFromLocation(_markets.allVisibleMarkets(), location);
       $(".trucksListHeader").css("display", "block");
       $("#navTabs").css("display", "block");
-      buildMarketList($("#nowMarkets"), nowMarkets);
-      buildMarketList($("#laterMarkets"), laterMarkets);
-      if (nowMarkets.length == 0) {
-        $('a[href="#laterMarkets"]').tab('show');
+      buildMarketList($("#nowMarkets"), allMarkets);
+    } else {
+      var nowMarkets = sortByDistanceFromLocation(_markets.openNow(), location),
+          laterMarkets = sortByDistanceFromLocation(_markets.openLater(), location);
+      if (nowMarkets.length == 0 && laterMarkets.length == 0) {
+        $(".trucksListHeader").css("display", "none");
+        $("#navTabs").css("display", "none");
+        $(".marketDL").empty();
       } else {
-        $('a[href="#nowMarkets"]').tab('show');
+        $(".trucksListHeader").css("display", "block");
+        $("#navTabs").css("display", "block");
+        buildMarketList($("#nowMarkets"), nowMarkets);
+        buildMarketList($("#laterMarkets"), laterMarkets);
+        if (nowMarkets.length == 0) {
+          $('a[href="#laterMarkets"]').tab('show');
+        } else {
+          $('a[href="#nowMarkets"]').tab('show');
+        }
       }
     }
   }
@@ -298,13 +319,19 @@ var FarmersMarketFinder = function () {
     _markers.clear();
     var currentLocation = findLocation();
     _markers.bounds.extend(currentLocation);
-    // TODO: we're sorting in two locations...probably shouldn't do that.
-    $.each(sortByDistanceFromLocation(_markets.openNow(), currentLocation), function (idx, stop) {
-      _markers.add(stop);
-    });
-    $.each(sortByDistanceFromLocation(_markets.openLater(), currentLocation), function (idx, stop) {
-      _markers.add(stop);
-    });
+    if (isAllMarkets()) {
+      $.each(sortByDistanceFromLocation(_markets.allVisibleMarkets(), currentLocation), function (idx, stop) {
+        _markers.add(stop);
+      });
+    } else {
+      // TODO: we're sorting in two locations...probably shouldn't do that.
+      $.each(sortByDistanceFromLocation(_markets.openNow(), currentLocation), function (idx, stop) {
+        _markers.add(stop);
+      });
+      $.each(sortByDistanceFromLocation(_markets.openLater(), currentLocation), function (idx, stop) {
+        _markers.add(stop);
+      });
+    }
   }
 
   function resize() {
@@ -322,6 +349,7 @@ var FarmersMarketFinder = function () {
   }
 
   function setupPills() {
+    /*
     $('a.pill-link').on('shown.bs.tab', function (e) {
       var dataSet = activeDataSet()
       enableNavs();
@@ -331,6 +359,7 @@ var FarmersMarketFinder = function () {
       })
 
     });
+*/
   }
 
   function setupGlobalEventHandlers() {
@@ -402,6 +431,10 @@ var FarmersMarketFinder = function () {
         setCookie("motd", model["message"]["id"])
       });
     }
+  }
+
+  function isAllMarkets() {
+    return activeDataSet() == 'allmarkets';
   }
 
   function activeDataSet() {
